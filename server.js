@@ -85,20 +85,15 @@ app.put('/api/todos/:id', function update(req, res) {
    * id specified in the route parameter (:id) and respond
    * with the newly updated todo. */
    var updateTodo = req.params.id;
-   todos.findById({_id: id}, function(err, todos){
-    if(err) res.json({message: 'could not update because ' + err});
-    if(req.body.task) {
-      todos.task = req.body.task;
+   todos.forEach(function(element){
+      console.log(element._id);
+      console.log(updateTodo);
+
+    if(parseInt(element._id) === parseInt(updateTodo)){
+      element.task = req.body.task;
+      element.description = req.body.description;
+      res.json(element);
     }
-    if(req.body.description) {
-      todos.description = req.body.description;
-    }
-    console.log(todos);
-    todos.save(function(err){
-      if(err) res.json({message: 'could not save update because ' + err});
-      res.json({message: 'todo updated'});
-      res.redirect('/todos');
-    });
    });
 });
 
@@ -106,21 +101,21 @@ app.delete('/api/todos/:id', function destroy(req, res) {
   /* This endpoint will delete a single todo with the
    * id specified in the route parameter (:id) and respond
    * with deleted todo. */
-   var deleteTodo = parseInt(req.params.id);
    // return what is to be deleted
    // use for loop to find out if the id req matches id in the array
    // use array.splice
 
-   for (var i = 0; i < todos.length; i++) {
-
-   }
-   todos.remove({_id: id}, function(err){
-    if(err) res.json({message: 'could not delete because ' + err});
-    res.redirect('/todos');
+   var deleteTodo = parseInt(req.params.id);
+ 
+   todos.forEach(function(element, index){
+    if(parseInt(element._id) === parseInt(deleteTodo)){
+      var deleted = element;
+      todos.splice(index, 1);
+      res.json(deleted);
+    }
    });
-
 });
-
+ 
 /**********
  * SERVER *
  **********/
